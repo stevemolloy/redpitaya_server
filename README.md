@@ -1,10 +1,11 @@
 # RedPitaya based digitiser server/client
 
 Run the server:
-`python3 digitiser_server.py`
+```
+python3 digitiser_server.py
+```
 
 Use the client:
-
 ```
 from digitiser_client import atten_set, digitiser_acquire
 return_val = atten_set(25.5)
