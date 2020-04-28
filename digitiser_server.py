@@ -6,14 +6,14 @@ from time import sleep
 
 togglepin = overlay.gpio('p', 7, 'out')
 togglepin.write(False)
-bitpins = [overlay.gpio('n', bit, 'out') for bit in reversed(range(6))]
+bitpins = [overlay.gpio('n', bit, 'out') for bit in reversed(range(5))]
 LATCH_TIME = 0.1
 HOST = '127.0.0.1'
 PORT = 65432
  
 def dectobinlist(num):
     "Returns a list of Booleans corresponding to the binary representation of the numerical input"
-    return [(num & 2**digit) > 0 for digit in range(5, -1, -1)]
+    return [(num & 2**digit) > 0 for digit in range(4, -1, -1)]
 
 def set_pins(val):
     for chan, state in zip(bitpins, dectobinlist(val)):
@@ -28,13 +28,13 @@ def latchnewval():
 
 def set_atten(val):
     "Sets the attenuation of the ZX76-31R5A-PNS+ to val."
-    if val<0.5:
-        val = 0.5
-    elif val>31.5:
-        val = 31.5
+    if val<1.0:
+        val = 1.0
+    elif val>31.0:
+        val = 31.0
 
-    setval = int(val * 2) / 2
-    set_pins(int(setval*2))
+    setval = int(val)
+    set_pins(setval)
     latchnewval()
 
     return setval
