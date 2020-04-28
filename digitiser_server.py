@@ -8,7 +8,7 @@ togglepin = overlay.gpio('p', 7, 'out')
 togglepin.write(False)
 bitpins = [overlay.gpio('n', bit, 'out') for bit in reversed(range(5))]
 LATCH_TIME = 0.1
-HOST = '127.0.0.1'
+HOST = '*'
 PORT = 65432
  
 def dectobinlist(num):
