@@ -7,7 +7,7 @@ from time import sleep
 togglepin = overlay.gpio('p', 7, 'out')
 togglepin.write(False)
 bitpins = [overlay.gpio('n', bit, 'out') for bit in reversed(range(5))]
-LATCH_TIME = 0.1
+LATCH_TIME = 0.01
 HOST = '*'
 PORT = 65432
  
@@ -42,18 +42,22 @@ def set_atten(val):
 fpga = overlay()
 digitisers = [fpga.osc(0, 1.0), fpga.osc(1, 1.0)]
 for digi in digitisers:
+    # data rate decimation 
     digi.decimation = 1
-    digi.trigger_pre = 0
-    digi.trigger_post = digi.buffer_size
-    digi.trig_src = 0
+    # trigger timing [sample periods]
+    N = digi.buffer_size
+    digi.trigger_pre  = N//4 * 1
+    digi.trigger_post = N//4 * 3
+    # trigger level hysteresis [V] and edge ['neg', 'pos']
+    digi.level = [0.4, 0.5]
+    digi.edge  = 'pos'
+    # trigger source is the level trigger from the same input
+    digi.trig_src = fpga.trig_src["osc0"]
+    # digitisers need to be reset and started
+    digi.reset()
 
 @coroutine
 def handle_echo(reader, writer):
-    for digitiser in digitisers:
-        digitiser.reset()
-        digitiser.start()
-        digitiser.trigger()
-
     data = yield from reader.read(100)
     # message = data.decode()
     # addr = writer.get_extra_info('peername')
@@ -66,6 +70,7 @@ def handle_echo(reader, writer):
         param = int(message_list[1])
         if param==0 or param==1:
             digitiser = digitisers[param]
+            digitiser.start()
             # wait for data
             while (digitiser.status_run()):
                 pass
