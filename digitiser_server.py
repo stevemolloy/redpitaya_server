@@ -28,8 +28,8 @@ def latchnewval():
 
 def set_atten(val):
     "Sets the attenuation of the ZX76-31R5A-PNS+ to val."
-    if val<1.0:
-        val = 1.0
+    if val<0.0:
+        val = 0.0
     elif val>31.0:
         val = 31.0
 
