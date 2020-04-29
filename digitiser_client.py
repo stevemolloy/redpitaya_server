@@ -27,7 +27,7 @@ def digitiser_acquire(channel, CONNECTION=CONNECTION):
 def atten_set(val, CONNECTION=CONNECTION):
     with socket(AF_INET, SOCK_STREAM) as s:
         s.connect(CONNECTION)
-        s.sendall(b'atten' + b':' + str(val).encode())
+        s.sendall(b'atten:' + str(val).encode())
         data = s.recv(1024)
     
     return float(data)
