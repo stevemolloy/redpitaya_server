@@ -65,6 +65,7 @@ def handle_echo(reader, writer):
 
     message_list = data.decode().split(':')
     cmd = message_list[0]
+    print(message_list)
 
     if cmd=='digi':
         param = int(message_list[1])
